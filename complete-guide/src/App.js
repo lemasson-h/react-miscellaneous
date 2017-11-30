@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
+import classes from './App.css';
 import Person from './Person/Person';
 
 class App extends Component {
@@ -70,11 +70,11 @@ class App extends Component {
     let persons = null;
 
     if (this.state.persons.length <= 2) {
-      classesForP.push('red');
+      classesForP.push(classes.red);
     }
 
     if (this.state.persons.length <= 1) {
-      classesForP.push('bold');
+      classesForP.push(classes.bold);
     }
 
     if (this.state.showPersons) {
@@ -107,7 +107,7 @@ class App extends Component {
     }
 
     return (
-        <div className="App">
+        <div className={classes.App}>
           <h1>Hi, I am a React app</h1>
           <p className={classesForP.join(' ')}>This is working!</p>
           {/*The function binding can be inefficient, prefer the bind version: onClick={() => this.switchNameHandler('Ghislaine') }*/}
