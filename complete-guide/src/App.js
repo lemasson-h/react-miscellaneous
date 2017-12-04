@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import classes from './App.css';
 import Person from './Person/Person';
+import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 
 class App extends Component {
   state = {
@@ -58,16 +59,9 @@ class App extends Component {
   }
 
   render() {
-    const style = {
-        backgroundColor: 'green',
-        color: 'white',
-        font: 'inherit',
-        border: '1px solid black',
-        padding: '8px',
-        cursor: 'pointer'
-    };
     const classesForP = [];
-    let persons = null;
+    let persons = null
+    let buttonClass = null;
 
     if (this.state.persons.length <= 2) {
       classesForP.push(classes.red);
@@ -81,51 +75,29 @@ class App extends Component {
       persons = (
         <div>
           {this.state.persons.map((person, index) => {
-            return <Person
-              name={person.name}
-              age={person.age}
-              click={() => this.deletePersonHandler(index)}
-              key={person.id}
-              changed={(event) => this.nameChangedHandler(event, person.id)} />
+            return <ErrorBoundary key={person.id}>
+              <Person
+                name={person.name}
+                age={person.age}
+                click={() => this.deletePersonHandler(index)}
+                changed={(event) => this.nameChangedHandler(event, person.id)} />
+              </ErrorBoundary>
           })}
-          {/*<Person
-            name={this.state.persons[0].name}
-            age={this.state.persons[0].age} />
-          <Person
-            name={this.state.persons[1].name}
-            age={this.state.persons[1].age}
-            click={this.switchNameHandler.bind(this, 'Anne Marie')}
-            changed={this.nameChangedHandler}>My Hobbies: Racing</Person>
-          <Person
-            name={this.state.persons[2].name}
-            age={this.state.persons[2].age}/>
-            */}
-        </div>
-      );
+        </div>)
 
-      style.backgroundColor = 'red';
+        buttonClass = classes.red;
     }
 
     return (
         <div className={classes.App}>
           <h1>Hi, I am a React app</h1>
           <p className={classesForP.join(' ')}>This is working!</p>
-          {/*The function binding can be inefficient, prefer the bind version: onClick={() => this.switchNameHandler('Ghislaine') }*/}
           <button
-            style={style}
+            className={buttonClass}
             onClick={this.togglePersonsHandler}>Toggle Persons</button>
             {persons}
         </div>
     );
-    // return React.createElement(
-    //   'div',
-    //   {className: 'App'},
-    //   React.createElement(
-    //     'h1',
-    //     null,
-    //     'Hi, I\'m a React App!!!'
-    //   )
-    // );
   }
 }
 
