@@ -1,30 +1,69 @@
 import React, { Component } from 'react';
 import classes from './App.css';
-import Person from './Person/Person';
-import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
+import Cockpit from './components/Cockpit/Cockpit';
+import PersonList from './components/PersonList/PersonList';
+import Aux from './hoc/Aux';
+import withClass from './hoc/withClass';
 
 class App extends Component {
-  state = {
-    persons: [
-      {
-        id: 'person_1',
-        name: 'Helene',
-        age: 26
-      },
-      {
-        id: 'person_2',
-        name: 'Mathieu',
-        age: 28
-      },
-      {
-        id: 'person_3',
-        name: 'Tobleron',
-        age: 2
-      }
-    ],
-    otherKey: "value",
-    showPersons: false
+  constructor(props) {
+    super(props);
+
+    console.log('[App.js] Inside Constructor', props);
+
+    this.state = {
+      persons: [
+        {
+          id: 'person_1',
+          name: 'Helene',
+          age: 26
+        },
+        {
+          id: 'person_2',
+          name: 'Mathieu',
+          age: 28
+        },
+        {
+          id: 'person_3',
+          name: 'Tobleron',
+          age: 2
+        }
+      ],
+      otherKey: "value",
+      showPersons: false,
+      toggleClicked: 0
+    }
   }
+
+  componentWillMount() {
+    console.log('[App.js] Inside componentWillMount');
+  }
+
+  componentDidMount() {
+    console.log('[App.js] Inside componentDidMount');
+  }
+
+  // state = {
+  //   persons: [
+  //     {
+  //       id: 'person_1',
+  //       name: 'Helene',
+  //       age: 26
+  //     },
+  //     {
+  //       id: 'person_2',
+  //       name: 'Mathieu',
+  //       age: 28
+  //     },
+  //     {
+  //       id: 'person_3',
+  //       name: 'Tobleron',
+  //       age: 2
+  //     }
+  //   ],
+  //   otherKey: "value",
+  //   showPersons: false
+  // }
 
   deletePersonHandler = (key) => {
     const persons = this.state.persons;
@@ -53,52 +92,32 @@ class App extends Component {
   }
 
   togglePersonsHandler = () => {
-    this.setState({
-      showPersons: !this.state.showPersons
+    this.setState( (prevState, props) => {
+      return {
+        showPersons: !prevState.showPersons,
+        toggleClicked: prevState.toggleClicked + 1
+        };
     });
   }
 
   render() {
-    const classesForP = [];
-    let persons = null
-    let buttonClass = null;
-
-    if (this.state.persons.length <= 2) {
-      classesForP.push(classes.red);
-    }
-
-    if (this.state.persons.length <= 1) {
-      classesForP.push(classes.bold);
-    }
-
-    if (this.state.showPersons) {
-      persons = (
-        <div>
-          {this.state.persons.map((person, index) => {
-            return <ErrorBoundary key={person.id}>
-              <Person
-                name={person.name}
-                age={person.age}
-                click={() => this.deletePersonHandler(index)}
-                changed={(event) => this.nameChangedHandler(event, person.id)} />
-              </ErrorBoundary>
-          })}
-        </div>)
-
-        buttonClass = classes.red;
-    }
+    console.log('[App.js] Inside render');
 
     return (
-        <div className={classes.App}>
-          <h1>Hi, I am a React app</h1>
-          <p className={classesForP.join(' ')}>This is working!</p>
-          <button
-            className={buttonClass}
-            onClick={this.togglePersonsHandler}>Toggle Persons</button>
-            {persons}
-        </div>
+        <Aux>
+            <button onClick={() => {this.setState({showPersons: true});}}>Show Persons</button>
+            <Cockpit
+              title={this.props.title}
+              persons={this.state.persons}
+              togglePersonsHandler={this.togglePersonsHandler}
+              showPersons={this.state.showPersons} />
+            <PersonList persons={this.state.persons}
+              showPersons={this.state.showPersons}
+              clicked={this.deletePersonHandler}
+              changed={this.nameChangedHandler}/>
+        </Aux>
     );
   }
 }
 
-export default App;
+export default withClass(App, classes.App);
