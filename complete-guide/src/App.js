@@ -16,7 +16,7 @@ class App extends Component {
         {
           id: 'person_1',
           name: 'Helene',
-          age: 26
+          age: "26"
         },
         {
           id: 'person_2',
