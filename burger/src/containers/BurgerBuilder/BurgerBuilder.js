@@ -3,6 +3,8 @@ import React, {Component} from 'react';
 import Aux from '../../hoc/Aux';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Burger from '../../components/Burger/Burger';
+import Modal from '../../components/UI/Modal/Modal';
+import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -20,7 +22,28 @@ class BurgerBuilder extends Component {
       meat: 0,
     },
     totalPrice: 4,
+    purchasable: false,
+    purchasing: false,
   };
+
+  updatePurchaseState(ingredients) {
+    const sum = Object.keys(ingredients)
+      .map(
+        (ingredientName) => {
+          return ingredients[ingredientName];
+        }
+      )
+      .reduce(
+        (prev, next) => {
+          return prev + next;
+        },
+        0
+      );
+
+    this.setState({
+      purchasable: sum > 0
+    });
+  }
 
   addIngredientHandler = (type) => {
     const oldCount = this.state.ingredients[type];
@@ -36,6 +59,7 @@ class BurgerBuilder extends Component {
       totalPrice: newTotalPrice,
       ingredients: updatedIngredients
     });
+    this.updatePurchaseState(updatedIngredients);
   }
 
   removeIngredientHandler = (type) => {
@@ -57,6 +81,13 @@ class BurgerBuilder extends Component {
       totalPrice: newTotalPrice,
       ingredients: updatedIngredients
     });
+    this.updatePurchaseState(updatedIngredients);
+  }
+
+  purchaseHandler = () => {
+    this.setState({
+      purchasing: true,
+    })
   }
 
   render (props) {
@@ -70,13 +101,18 @@ class BurgerBuilder extends Component {
 
     return (
       <Aux>
+        <Modal show={this.state.purchasing}>
+          <OrderSummary ingredients={this.state.ingredients} />
+        </Modal>
         <Burger ingredients={this.state.ingredients}/>
         <BuildControls
            price={this.state.totalPrice}
            ingredients={this.state.ingredients}
            disabledInfo={disabledInfo}
            moreMethod={this.addIngredientHandler}
-           lessMethod={this.removeIngredientHandler} />
+           lessMethod={this.removeIngredientHandler}
+           purchasable={this.state.purchasable}
+           orderMethod={this.purchaseHandler}/>
       </Aux>
     );
   }

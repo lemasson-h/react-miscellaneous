@@ -23,6 +23,9 @@ const buildControls = (props) => (
             lessMethod={() => props.lessMethod(ctrl.type)} />
         )
       )}
+      <button className={classes.OrderButton}
+        disabled={!props.purchasable}
+        onClick={props.orderMethod}>ORDER NOW</button>
     </div>
 );
 
