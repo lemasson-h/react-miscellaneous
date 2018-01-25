@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import axios from 'axios';
+import Axios from 'axios';
 import './FullPost.css';
 
 class FullPost extends Component {
@@ -15,7 +15,7 @@ class FullPost extends Component {
           || this.state.fullPost.id !== this.props.postId
         )
       ) {
-        axios.get('https://jsonplaceholder.typicode.com/posts/' + this.props.postId)
+        Axios.get('https://jsonplaceholder.typicode.com/posts/' + this.props.postId)
           .then(response => {
             this.setState({
               fullPost: response.data
@@ -23,6 +23,14 @@ class FullPost extends Component {
           })
       }
     }
+
+    deletePostHandler = () => {
+      Axios.delete('https://jsonplaceholder.typicode.com/posts/' + this.props.postId)
+        .then(response => {
+          console.log(response);
+        });
+    }
+
     render () {
         let post = <p style={{textAlign: 'center'}}>Please select a Post!</p>;
 
@@ -36,7 +44,7 @@ class FullPost extends Component {
                   <h1>{this.state.fullPost.title}</h1>
                   <p>{this.state.fullPost.body}</p>
                   <div className="Edit">
-                      <button className="Delete">Delete</button>
+                      <button className="Delete" onClick={this.deletePostHandler}>Delete</button>
                   </div>
               </div>
 

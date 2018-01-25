@@ -10,6 +10,7 @@ class Blog extends Component {
     state = {
       posts: [],
       fullPostId: null,
+      error: false,
     };
 
     clickPostHandler = (postId) => {
@@ -27,21 +28,30 @@ class Blog extends Component {
               ...post,
               author: 'Max'
             }
-          });
+          })
 
           this.setState({
             posts: updatedPosts
+          })
+        })
+        .catch(error => {
+          this.setState({
+            error: true
           })
         });
     }
 
     render () {
-      const posts = this.state.posts.map(post => {
-        return <Post key={post.id}
-          title={post.title}
-          author={post.author}
-          clickMethod={() => this.clickPostHandler(post.id)}/>
-      });
+      let posts = <p style={{textAlign: 'center'}}>Something went wrong</p>
+
+      if (!this.state.error) {
+        posts = this.state.posts.map(post => {
+          return <Post key={post.id}
+            title={post.title}
+            author={post.author}
+            clickMethod={() => this.clickPostHandler(post.id)}/>
+        });
+      }
 
         return (
             <div>
