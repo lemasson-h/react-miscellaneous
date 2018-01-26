@@ -28,3 +28,9 @@
     height: 600px;
   }
 }
+
+@media (max-height: 399px) {
+  .Burger {
+    width: 350px;
+  }
+}
