@@ -1,0 +1,64 @@
+import React, { Component } from 'react';
+
+import Axios from '../../Axios';
+import { Link } from 'react-router-dom';
+import Post from '../../components/Post/Post';
+import './Posts.css';
+
+class Posts extends Component {
+  state = {
+    posts: [],
+    fullPostId: null,
+    // error: false,
+  };
+
+  clickPostHandler = (postId) => {
+    this.setState({
+      fullPostId: postId,
+    });
+  }
+
+  componentDidMount() {
+    console.log(this.props);
+    Axios.get('/posts')
+      .then(response => {
+        const posts = response.data.slice(0, 4);
+        const updatedPosts = posts.map(post => {
+          return {
+            ...post,
+            author: 'Max'
+          }
+        })
+
+        this.setState({
+          posts: updatedPosts
+        })
+      })
+      .catch(error => {
+        // this.setState({
+        //   error: true
+        // })
+      });
+  }
+
+  render () {
+    let posts = <p style={{textAlign: 'center'}}>Something went wrong</p>
+
+    if (!this.state.error) {
+      posts = this.state.posts.map(post => {
+        return <Link to={'/' + post.id} key={post.id}><Post
+          title={post.title}
+          author={post.author}
+          clickMethod={() => this.clickPostHandler(post.id)}/></Link>
+      });
+    }
+
+    return (
+      <section className="Posts">
+          {posts}
+      </section>
+    );
+  }
+}
+
+export default Posts;
