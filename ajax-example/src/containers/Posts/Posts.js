@@ -15,7 +15,7 @@ class Posts extends Component {
   clickPostHandler = (postId) => {
     // this.props.history.push('/' + postId);
     this.props.history.push({
-      pathname: '/' + postId
+      pathname: '/posts/' + postId
     });
   }
 
@@ -64,7 +64,7 @@ class Posts extends Component {
         <section className="Posts">
           {posts}
         </section>
-        <Route path={this.props.match.url + ':postId'} exact component={FullPost} />
+        <Route path={this.props.match.url + '/:postId'} exact component={FullPost} />
       </div>
     );
   }
