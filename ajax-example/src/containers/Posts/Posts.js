@@ -1,24 +1,25 @@
 import React, { Component } from 'react';
 
 import Axios from '../../Axios';
-import { Link } from 'react-router-dom';
+import FullPost from '../FullPost/FullPost';
 import Post from '../../components/Post/Post';
+import { Route } from 'react-router-dom';
 import './Posts.css';
 
 class Posts extends Component {
   state = {
     posts: [],
-    fullPostId: null,
     // error: false,
   };
 
   clickPostHandler = (postId) => {
-    this.setState({
-      fullPostId: postId,
+    // this.props.history.push('/' + postId);
+    this.props.history.push({
+      pathname: '/' + postId
     });
   }
 
-  componentDidMount() {
+  componentWillMount() {
     console.log(this.props);
     Axios.get('/posts')
       .then(response => {
@@ -46,17 +47,25 @@ class Posts extends Component {
 
     if (!this.state.error) {
       posts = this.state.posts.map(post => {
-        return <Link to={'/' + post.id} key={post.id}><Post
-          title={post.title}
-          author={post.author}
-          clickMethod={() => this.clickPostHandler(post.id)}/></Link>
+        return (
+          // <Link to={'/' + post.id} key={post.id}>
+            <Post
+              key={post.id}
+              title={post.title}
+              author={post.author}
+              clickMethod={() => this.clickPostHandler(post.id)}/>
+          // </Link>
+        );
       });
     }
 
     return (
-      <section className="Posts">
+      <div>
+        <section className="Posts">
           {posts}
-      </section>
+        </section>
+        <Route path={this.props.match.url + ':postId'} exact component={FullPost} />
+      </div>
     );
   }
 }
