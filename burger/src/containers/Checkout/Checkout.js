@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import { Route } from 'react-router-dom';
 
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
+import ContactData from './ContactData/ContactData';
 
 class Checkout extends Component {
   state = {
@@ -9,7 +11,8 @@ class Checkout extends Component {
         meat: 1,
         bacon: 1,
         cheese: 1,
-      }
+      },
+      totalPrice: 0,
   };
 
   continueHandler = () => {
@@ -23,14 +26,20 @@ class Checkout extends Component {
   componentDidMount() {
     let ingredients = {};
     const query = new URLSearchParams(this.props.location.search);
+    const totalPrice = +query.get('totalPrice', 0);
 
     try {
       ingredients = JSON.parse(query.get('ingredients'));
     } catch (exception) {
     }
 
+    if (null === ingredients) {
+      ingredients = {};
+    }
+
     this.setState({
-      ingredients: ingredients
+      ingredients: ingredients,
+      totalPrice: totalPrice
     });
   }
 
@@ -40,6 +49,8 @@ class Checkout extends Component {
         <CheckoutSummary ingredients={this.state.ingredients}
           cancelMethod={this.cancelMethod}
           continueMethod={this.continueHandler}/>
+        <Route path={this.props.match.url + '/contact-data'}
+          render={(props) => (<ContactData ingredients={this.state.ingredients} totalPrice={this.state.totalPrice} {...props}/>)} />
       </div>
     );
   }
