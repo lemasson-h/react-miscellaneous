@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 
-import * as actions from '../../store/actions';
+import * as actionCreators from '../../store/actions/index'; //This will load index.js in the directory
 import Aux from '../../hoc/Aux/Aux';
 import AxiosOrder from '../../AxiosOrder';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
@@ -18,19 +18,10 @@ class BurgerBuilder extends Component {
     // totalPrice: 4,
     purchasing: false,
     loading: false,
-    error: false,
   };
 
   componentDidMount() {
-    // AxiosOrder.get('https://burger-hl.firebaseio.com/ingredients.json')
-    //   .then(response => {
-    //       this.setState({
-    //         ingredients: response.data
-    //       });
-    //   })
-    //   .catch(error => {
-    //     this.setState({error: true});
-    //   });
+    this.props.onLoadIngredients();
   }
 
   purchaseHandler = () => {
@@ -61,7 +52,7 @@ class BurgerBuilder extends Component {
     };
 
     let orderSummary = null;
-    let burger = this.state.error ? <p>Ingredients can't be loaded.</p> : <Spinner />;
+    let burger = this.props.error ? <p>Ingredients can't be loaded.</p> : <Spinner />;
 
     if (this.props.ingredients) {
       burger = (
@@ -106,13 +97,15 @@ const mapStateToProps = (state) => {
     ingredients: state.ingredients,
     totalPrice: state.totalPrice,
     purchasable: state.purchasable,
+    error: state.error,
   };
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onAddIngredient: (name) => dispatch({type: actions.ADD_INGREDIENT, ingredientName: name}),
-    onRemoveIngredient: (name) => dispatch({type: actions.REMOVE_INGREDIENT, ingredientName: name}),
+    onAddIngredient: (name) => dispatch(actionCreators.addIngredient(name)),
+    onRemoveIngredient: (name) => dispatch(actionCreators.removeIngredient(name)),
+    onLoadIngredients: () => dispatch(actionCreators.loadIngredients()),
   };
 }
 
