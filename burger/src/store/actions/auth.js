@@ -58,12 +58,12 @@ export const authenticate = (email, password, isSignup) => {
 const checkAuthTimeout = (expirationTime) => {
   return dispatch => {
     setTimeout(() => {
-      dispatch(logOut());
+      dispatch(logout());
     }, expirationTime *  1000); //Convert second to millisecond
   }
 }
 
-export const logOut = () => {
+export const logout = () => {
   return {
     type: actionTypes.AUTH_LOGOUT,
   }
