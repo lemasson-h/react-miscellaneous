@@ -76,6 +76,16 @@ const removeIngredient = (state, action) => {
   };
 }
 
+const initializeIngredients = (state, action) => {
+  return {
+      ...state,
+     ingredients: action.ingredients,
+     purchasable: false,
+     error: false,
+     totalPrice: 0,
+   };
+}
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.ADD_INGREDIENT:
@@ -83,7 +93,7 @@ const reducer = (state = initialState, action) => {
     case actionTypes.REMOVE_INGREDIENT:
       return removeIngredient(state, action);
     case actionTypes.INITIALIZE_INGREDIENTS:
-      return {...state, ingredients: action.ingredients, error: false};
+      return initializeIngredients(state, action);
     case actionTypes.ERROR_INGREDIENTS:
       return {...state, error: true};
     default:
