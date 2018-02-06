@@ -79,6 +79,7 @@ class ContactData extends Component {
         value: '',
         validation: {
           required: true,
+          isEmail: true,
         },
         valid: false,
         touched: false,
@@ -110,6 +111,13 @@ class ContactData extends Component {
 
     if (rules.maxLength && value.length > rules.maxLength) {
         return 'You must enter a value of at maximum ' + rules.minLength + ' characters';
+    }
+
+    if (rules.isEmail) {
+        const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+        if (!pattern.test(value)) {
+          return 'Invalid email';
+        }
     }
 
     return '';

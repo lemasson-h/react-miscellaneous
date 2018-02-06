@@ -9,3 +9,7 @@ export {
   purchaseInit,
   loadOrders
 } from './order';
+
+export {
+  authenticate
+} from './auth.js';
