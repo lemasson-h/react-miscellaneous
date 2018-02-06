@@ -22,11 +22,11 @@ const purchaseBurgerFail = (error) => {
   };
 }
 
-export const purchaseBurger = (orderData) => {
+export const purchaseBurger = (orderData, userToken) => {
   return dispatch => {
       dispatch(purchaseBurgerStart());
 
-      AxiosOrder.post('/orders.json', orderData)
+      AxiosOrder.post('/orders.json?auth=' + userToken, orderData)
         .then(response => {
           dispatch(purchaseBurgerSuccess(response.data.name, orderData));
         })
@@ -51,7 +51,7 @@ const initializeOrdersSuccess = (orders) => {
 
 const initializeOrdersFail = (error) => {
   return {
-    type: actionTypes.INITIALIZE_ORDERS_SUCCESS,
+    type: actionTypes.INITIALIZE_ORDERS_FAIL,
     error: error,
   };
 }
@@ -62,11 +62,11 @@ const initializeOrdersStart = () => {
   };
 }
 
-export const loadOrders = () => {
+export const loadOrders = (userToken) => {
   return dispatch => {
       dispatch(initializeOrdersStart());
 
-      AxiosOrder.get('/orders.json')
+      AxiosOrder.get('/orders.json?auth=' + userToken)
         .then(response => {
           const fetchedOrders = [];
           for (let key in response.data) {
