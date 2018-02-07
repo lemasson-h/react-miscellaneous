@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 
+import * as actionCreators from './store/actions';
 import Auth from './containers/Auth/Auth';
+import Aux from './hoc/Aux/Aux';
 import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder';
 import Checkout from './containers/Checkout/Checkout';
 import Layout from './hoc/Layout/Layout';
@@ -13,26 +16,32 @@ class App extends Component {
     show: true,
   };
 
-  componentDidMount() {
-      // setTimeout(
-      //   () => {
-      //     this.setState({show: false});
-      //   },
-      //   5000
-      // );
+  componentWillMount() {
+      this.props.onTryAutoSignup();
   }
 
   render() {
+    let guardedRoutes = null;
+
+    if (this.props.isAuthenticated) {
+      guardedRoutes = (
+        <Aux>
+          <Route path="/orders" component={Orders} />
+          <Route path="/checkout" component={Checkout} />
+          <Route path="/logout" component={Logout} />
+        </Aux>
+      );
+    }
+
     return (
       <div>
         <BrowserRouter>
           <Layout>
             <Switch>
               <Route path="/" exact component={BurgerBuilder} />
-              <Route path="/orders" component={Orders} />
-              <Route path="/checkout" component={Checkout} />
               <Route path="/login" component={Auth} />
-              <Route path="/logout" component={Logout} />
+              {guardedRoutes}
+              <Redirect to="/"/>
             </Switch>
           </Layout>
         </BrowserRouter>
@@ -41,4 +50,16 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    isAuthenticated: null !== state.auth.token,
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onTryAutoSignup: () => dispatch(actionCreators.authCheckState()),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

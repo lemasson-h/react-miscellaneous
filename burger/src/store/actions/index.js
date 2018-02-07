@@ -13,4 +13,6 @@ export {
 export {
   authenticate,
   logout,
+  authChangeRedirectPath,
+  authCheckState,
 } from './auth.js';

@@ -33,19 +33,21 @@ export const authenticate = (email, password, isSignup) => {
       returnSecureToken: true,
     }
 
-    let url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=MY_PRIVATE_KEY';
+    let url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=MY_KEY';
 
     if (!isSignup) {
-      url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=MY_PRIVATE_KEY';
+      url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=MY_KEY';
     }
-
-    console.log(url);
 
     Axios.post(
       url,
       authData
     )
       .then(response => {
+        const expirationDate = new Date((new Date()).getTime() + response.data.expiresIn * 1000);
+        localStorage.setItem('token', response.data.idToken);
+        localStorage.setItem('user_id', response.data.localId);
+        localStorage.setItem('expiration_date', expirationDate);
         dispatch(authSuccess(response.data.idToken, response.data.localId));
         dispatch(checkAuthTimeout(response.data.expiresIn));
       })
@@ -64,7 +66,42 @@ const checkAuthTimeout = (expirationTime) => {
 }
 
 export const logout = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user_id');
+  localStorage.removeItem('expiration_date');
+
   return {
     type: actionTypes.AUTH_LOGOUT,
+  }
+}
+
+export const authChangeRedirectPath = (path) => {
+  return {
+    type: actionTypes.AUTH_CHANGE_REDIRECT_PATH,
+    path: path,
+  };
+}
+
+export const authCheckState = () => {
+  return dispatch => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      return ;
+    }
+
+    const expirationDate = new Date(localStorage.getItem('expiration_date'));
+
+    if (expirationDate <= new Date()) {
+        return dispatch(logout());
+    }
+
+    console.log(expirationDate);
+    console.log(expirationDate.getTime());
+    console.log(new Date());
+    console.log((new Date()).getTime());
+    console.log(expirationDate.getTime() - (new Date()).getTime());
+    dispatch(authSuccess(token, localStorage.getItem('user_id')));
+    dispatch(checkAuthTimeout((expirationDate.getTime() - (new Date()).getTime()) / 1000));
   }
 }

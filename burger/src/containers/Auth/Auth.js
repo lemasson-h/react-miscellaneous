@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect, withRouter } from 'react-router-dom';
 
 import * as actionCreators from '../../store/actions';
 import Button from '../../components/UI/Button/Button';
@@ -52,7 +53,9 @@ class Auth extends Component {
 
   componentDidMount()
   {
-    console.log(this.state.isSignup);
+    if (!this.props.isBuildingBurger && this.props.redirectPath !== '/') {
+      this.props.onAuthChangeRedirectPath();
+    }
   }
 
   /** START DUPLICATE - To be refactorize **/
@@ -133,6 +136,10 @@ class Auth extends Component {
   }
 
   render() {
+    if (this.props.isAuthenticated) {
+      return <Redirect to={this.props.redirectPath} />;
+    }
+
     const formElementsArray = [];
 
     for (let key in this.state.controls) {
@@ -189,13 +196,17 @@ const mapStateToProps = state => {
   return {
     loading: state.auth.loading,
     error: state.auth.error,
+    isAuthenticated: null !== state.auth.token,
+    redirectPath: state.auth.redirectPath,
+    isBuildingBurger: state.burger.building
   };
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     onAuthenticate: (email, password, isSignup) => dispatch(actionCreators.authenticate(email, password, isSignup)),
+    onAuthChangeRedirectPath: (path) => dispatch(actionCreators.authChangeRedirectPath('/')),
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Auth);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Auth));

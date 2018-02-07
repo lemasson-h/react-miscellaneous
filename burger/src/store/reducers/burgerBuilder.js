@@ -1,10 +1,13 @@
 import * as actionTypes from '../actions/actionTypes';
 
+const basePrice = 4.0;
+
 const initialState = {
   ingredients: null,
-  totalPrice: 0,
+  totalPrice: basePrice,
   purchasable: false,
   error: false,
+  building: false,
 };
 
 const INGREDIENT_PRICES = {
@@ -48,6 +51,7 @@ const addIngredient = (state, action) => {
     totalPrice: newTotalPrice,
     ingredients: updatedIngredients,
     purchasable: purchasable,
+    building: true,
   };
 }
 
@@ -73,6 +77,7 @@ const removeIngredient = (state, action) => {
     totalPrice: newTotalPrice,
     ingredients: updatedIngredients,
     purchasable: purchasable,
+    building: newTotalPrice > basePrice,
   };
 }
 
@@ -82,7 +87,8 @@ const initializeIngredients = (state, action) => {
      ingredients: action.ingredients,
      purchasable: false,
      error: false,
-     totalPrice: 0,
+     totalPrice: basePrice,
+     building: false,
    };
 }
 

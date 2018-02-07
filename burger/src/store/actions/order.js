@@ -62,11 +62,13 @@ const initializeOrdersStart = () => {
   };
 }
 
-export const loadOrders = (userToken) => {
+export const loadOrders = (userToken, userId) => {
   return dispatch => {
       dispatch(initializeOrdersStart());
 
-      AxiosOrder.get('/orders.json?auth=' + userToken)
+      const queryParams = '?auth=' + userToken + '&orderBy="userId"&equalTo="' + userId + '"';
+
+      AxiosOrder.get('/orders.json' + queryParams)
         .then(response => {
           const fetchedOrders = [];
           for (let key in response.data) {
