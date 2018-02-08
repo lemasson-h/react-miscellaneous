@@ -6,10 +6,21 @@ import * as actionCreators from './store/actions';
 import Auth from './containers/Auth/Auth';
 import Aux from './hoc/Aux/Aux';
 import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder';
-import Checkout from './containers/Checkout/Checkout';
 import Layout from './hoc/Layout/Layout';
+import LazyLoad from './hoc/LazyLoad/LazyLoad';
 import Logout from './containers/Auth/Logout/Logout';
-import Orders from './containers/Orders/Orders';
+
+const LazyLoadOrders = LazyLoad(
+  () => {
+    return import('./containers/Orders/Orders');
+  }
+);
+
+const LazyLoadCheckout = LazyLoad(
+  () => {
+    return import('./containers/Checkout/Checkout');
+  }
+);
 
 class App extends Component {
   state = {
@@ -26,8 +37,8 @@ class App extends Component {
     if (this.props.isAuthenticated) {
       guardedRoutes = (
         <Aux>
-          <Route path="/orders" component={Orders} />
-          <Route path="/checkout" component={Checkout} />
+          <Route path="/orders" component={LazyLoadOrders} />
+          <Route path="/checkout" component={LazyLoadCheckout} />
           <Route path="/logout" component={Logout} />
         </Aux>
       );
