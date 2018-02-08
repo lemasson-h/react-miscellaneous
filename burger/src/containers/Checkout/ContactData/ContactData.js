@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import * as actionCreators from '../../../store/actions';
 import AxiosOrder from '../../../AxiosOrder';
 import Button from '../../../components/UI/Button/Button';
+import { checkValidity } from '../../../share/utility.js';
 import classes from './ContactData.css';
 import { connect } from 'react-redux';
 import Input from '../../../components/UI/Input/Input';
@@ -100,29 +101,6 @@ class ContactData extends Component {
     formIsValid: false,
   }
 
-  checkValidity(value, rules) {
-    if (rules.required && value.trim() === '') {
-        return 'You must specify a value.';
-    }
-
-    if (rules.minLength && value.length < rules.minLength) {
-      return 'You must enter a value of at least ' + rules.minLength + ' characters';
-    }
-
-    if (rules.maxLength && value.length > rules.maxLength) {
-        return 'You must enter a value of at maximum ' + rules.minLength + ' characters';
-    }
-
-    if (rules.isEmail) {
-        const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-        if (!pattern.test(value)) {
-          return 'Invalid email';
-        }
-    }
-
-    return '';
-  }
-
   orderHandler = (event) => {
     event.preventDefault();
 
@@ -143,36 +121,39 @@ class ContactData extends Component {
   }
 
   inputChangeHandler = (event, inputId) => {
-    const updatedOrderForm = {
-      ...this.state.orderForm
+    const updateElement = {
+      ...this.state.orderForm[inputId],
+      value: event.target.value,
+      touched: true,
     };
-    updatedOrderForm[inputId] = {
-      ...this.state.orderForm[inputId]
-    };
-    updatedOrderForm[inputId].value = event.target.value;
 
-    if (updatedOrderForm[inputId].validation) {
-      updatedOrderForm[inputId].errorMessage = this.checkValidity(
-        updatedOrderForm[inputId].value,
-        updatedOrderForm[inputId].validation
+    if (updateElement.validation) {
+      updateElement.errorMessage = checkValidity(
+        updateElement.value,
+        updateElement.validation
       );
-      updatedOrderForm[inputId].valid = '' === updatedOrderForm[inputId].errorMessage;
+      updateElement.valid = '' === updateElement.errorMessage;
     }
-
-    updatedOrderForm[inputId].touched = true;
 
     let formIsValid = true;
 
-    for (let key in updatedOrderForm) {
-      if (!updatedOrderForm[key].valid) {
+    for (let key in this.state.orderForm) {
+      if (key === inputId) {
+        if (!updateElement.valid) {
+          formIsValid = false;
+        }
+      } else if (!this.state.orderForm[key].valid) {
         formIsValid = false;
       }
     }
 
     this.setState({
-      orderForm: updatedOrderForm,
+      orderForm: {
+        ...this.state.orderForm,
+        [inputId]: updateElement,
+      },
       formIsValid: formIsValid,
-    })
+    });
   }
 
   render () {

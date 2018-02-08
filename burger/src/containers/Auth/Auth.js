@@ -4,6 +4,7 @@ import { Redirect, withRouter } from 'react-router-dom';
 
 import * as actionCreators from '../../store/actions';
 import Button from '../../components/UI/Button/Button';
+import { checkValidity } from '../../share/utility.js';
 import Input from '../../components/UI/Input/Input';
 import classes from './Auth.css';
 import Spinner from '../../components/UI/Spinner/Spinner';
@@ -60,29 +61,6 @@ class Auth extends Component {
 
   /** START DUPLICATE - To be refactorize **/
 
-  checkValidity(value, rules) {
-    if (rules.required && value.trim() === '') {
-        return 'You must specify a value.';
-    }
-
-    if (rules.minLength && value.length < rules.minLength) {
-      return 'You must enter a value of at least ' + rules.minLength + ' characters';
-    }
-
-    if (rules.maxLength && value.length > rules.maxLength) {
-        return 'You must enter a value of at maximum ' + rules.minLength + ' characters';
-    }
-
-    if (rules.isEmail) {
-        const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-        if (!pattern.test(value)) {
-          return 'Invalid email';
-        }
-    }
-
-    return '';
-  }
-
   inputChangeHandler = (event, inputId) => {
     const updatedForm = {
       ...this.state.controls,
@@ -94,7 +72,7 @@ class Auth extends Component {
     };
 
     if (updatedForm[inputId].validation) {
-      updatedForm[inputId].errorMessage = this.checkValidity(
+      updatedForm[inputId].errorMessage = checkValidity(
         updatedForm[inputId].value,
         updatedForm[inputId].validation
       );
