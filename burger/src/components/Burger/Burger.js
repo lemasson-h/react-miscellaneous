@@ -5,7 +5,6 @@ import { withRouter } from 'react-router-dom';
 import classes from './Burger.css';
 
 const burger = (props) => {
-  console.log(props);
   let ingredients = Object.keys(props.ingredients)
     .map((ingredientName) => {
       return [...Array(props.ingredients[ingredientName])].map(
