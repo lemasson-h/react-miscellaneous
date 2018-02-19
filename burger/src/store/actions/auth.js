@@ -33,10 +33,10 @@ export const authenticate = (email, password, isSignup) => {
       returnSecureToken: true,
     }
 
-    let url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=MY_KEY';
+    let url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyD9rvJ3sXBiFR8oODUd5lYu_HHAQoUT_a0';
 
     if (!isSignup) {
-      url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=MY_KEY';
+      url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyD9rvJ3sXBiFR8oODUd5lYu_HHAQoUT_a0';
     }
 
     Axios.post(

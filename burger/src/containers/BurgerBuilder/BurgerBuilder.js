@@ -12,7 +12,7 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/WithErrorHandler/WithErrorHandler';
 
 
-class BurgerBuilder extends Component {
+export class BurgerBuilder extends Component {
   state = {
     // ingredients: null,
     // totalPrice: 4,
