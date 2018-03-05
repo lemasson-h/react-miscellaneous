@@ -25,31 +25,18 @@ class App extends Component {
   }
 
   render() {
-    const block = (
-      <Transition
-        in={this.state.showBlock}
-        timeout={400}
-        mountOnEnter
-        unmountOnExit>
-        {state => (
-          <div style={{
-            backgroundColor: 'red',
-            width: 100,
-            height: 100,
-            margin: 'auto',
-            transition: 'opacity 0.4s ease-out',
-            opacity: state === 'exiting' ? 0 : 1
-          }}></div>
-        )}
-      </Transition>
-    );
     return (
       <div className="App">
         <h1>React Animations</h1>
-        <button className="Button" onClick={() => this.setState(prevState => ({showBlock: !prevState.showBlock}))}>Toggle</button>
-        <br/>
-        {block}
-        <Modal show={this.state.modalIsOpen} closed={this.closeModal}/>
+        <Transition
+          in={this.state.modalIsOpen}
+          mountOnEnter
+          unmountOnExit
+          timeout={300}>
+          {state => (
+            <Modal show={state} closed={this.closeModal}/>
+          )}
+        </Transition>
         <Backdrop show={this.state.modalIsOpen}  />
         <button className="Button" onClick={this.showModal}>Open Modal</button>
         <h3>Animating Lists</h3>
