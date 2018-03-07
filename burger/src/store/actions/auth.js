@@ -1,13 +1,12 @@
 import * as actionTypes from './actionTypes';
-import Axios from 'axios';
 
-const authStart = () => {
+export const authStart = () => {
   return {
     type: actionTypes.AUTH_START,
   };
 }
 
-const authSuccess = (token, userId) => {
+export const authSuccess = (token, userId) => {
   return {
     type: actionTypes.AUTH_SUCCESS,
     token: token,
@@ -15,7 +14,7 @@ const authSuccess = (token, userId) => {
   };
 }
 
-const authFail = (error) => {
+export const authFail = (error) => {
   return {
     type: actionTypes.AUTH_FAIL,
     error: error,
@@ -23,43 +22,18 @@ const authFail = (error) => {
 }
 
 export const authenticate = (email, password, isSignup) => {
-  return dispatch => {
-    dispatch(authStart());
-
-    const authData = {
-      email: email,
-      password: password,
-      returnSecureToken: true,
-    }
-
-    let url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyD9rvJ3sXBiFR8oODUd5lYu_HHAQoUT_a0';
-
-    if (!isSignup) {
-      url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyD9rvJ3sXBiFR8oODUd5lYu_HHAQoUT_a0';
-    }
-
-    Axios.post(
-      url,
-      authData
-    )
-      .then(response => {
-        const expirationDate = new Date((new Date()).getTime() + response.data.expiresIn * 1000);
-        localStorage.setItem('token', response.data.idToken);
-        localStorage.setItem('user_id', response.data.localId);
-        localStorage.setItem('expiration_date', expirationDate);
-        dispatch(authSuccess(response.data.idToken, response.data.localId));
-        dispatch(checkAuthTimeout(response.data.expiresIn));
-      })
-      .catch(error => {
-        dispatch(authFail(error.response.data.error));
-      });
+  return {
+    type: actionTypes.AUTH_LOGIN,
+    email: email,
+    password: password,
+    isSignup: isSignup,
   };
 }
 
-const checkAuthTimeout = (expirationTime) => {
+export const checkAuthTimeout = (expirationTime) => {
   return {
     type: actionTypes.AUTH_CHECK_TIMEOUT,
-    expirationTime: 10//expirationTime
+    expirationTime: expirationTime
   };
 }
 
