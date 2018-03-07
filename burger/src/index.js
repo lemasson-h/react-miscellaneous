@@ -10,7 +10,7 @@ import burgerReducer from './store/reducers/burgerBuilder';
 import orderReducer from './store/reducers/order';
 import registerServiceWorker from './registerServiceWorker';
 import thunk from 'redux-thunk';
-import { sagas } from './store/saga';
+import applySagas from './store/saga/sagas';
 
 const composeEnhancers = ('development' === process.env.NODE_ENV ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : null) || compose;
 const rootReducer = combineReducers({
@@ -26,7 +26,7 @@ const store = createStore(
   composeEnhancers(applyMiddleware(thunk, sagaMiddleware))
 );
 
-sagaMiddleware.run(sagas);
+applySagas(sagaMiddleware);
 
 ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
 registerServiceWorker();
