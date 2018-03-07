@@ -1,5 +1,4 @@
 import * as actionTypes from './actionTypes';
-import AxiosOrder from '../../AxiosOrder';
 
 export const addIngredient = (name) => {
   return {
@@ -15,14 +14,14 @@ export const removeIngredient = (name) => {
   };
 };
 
-const initializeIngredients = (ingredients) => {
+export const initializeIngredients = (ingredients) => {
   return {
     type: actionTypes.INITIALIZE_INGREDIENTS,
     ingredients: ingredients,
   };
 }
 
-const failToLoadIngredients = (error) => {
+export const failToLoadIngredients = (error) => {
   return {
     type: actionTypes.ERROR_INGREDIENTS,
     error: error,
@@ -30,13 +29,7 @@ const failToLoadIngredients = (error) => {
 }
 
 export const loadIngredients = () => {
-    return (dispatch) => {
-      AxiosOrder.get('https://burger-hl.firebaseio.com/ingredients.json')
-        .then(response => {
-            dispatch(initializeIngredients(response.data));
-        })
-        .catch(error => {
-            dispatch(failToLoadIngredients(error));
-        });
+    return {
+      type: actionTypes.LOAD_INGREDIENTS,
     }
 };
