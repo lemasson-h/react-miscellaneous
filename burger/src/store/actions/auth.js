@@ -7,7 +7,6 @@ const authStart = () => {
   };
 }
 
-
 const authSuccess = (token, userId) => {
   return {
     type: actionTypes.AUTH_SUCCESS,
@@ -58,21 +57,22 @@ export const authenticate = (email, password, isSignup) => {
 }
 
 const checkAuthTimeout = (expirationTime) => {
-  return dispatch => {
-    setTimeout(() => {
-      dispatch(logout());
-    }, expirationTime *  1000); //Convert second to millisecond
-  }
+  return {
+    type: actionTypes.AUTH_CHECK_TIMEOUT,
+    expirationTime: 10//expirationTime
+  };
 }
 
 export const logout = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user_id');
-  localStorage.removeItem('expiration_date');
-
   return {
     type: actionTypes.AUTH_LOGOUT,
   }
+}
+
+export const logoutSucceed = () => {
+  return {
+    type: actionTypes.AUTH_LOGOUT_SUCCEED
+  };
 }
 
 export const authChangeRedirectPath = (path) => {
